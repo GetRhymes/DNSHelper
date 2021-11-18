@@ -1,4 +1,4 @@
-package com.poly.dnshelper
+package kotlin.com.poly.dnshelper.model
 
 data class DNSFlags(
     private val isResponse: Boolean,

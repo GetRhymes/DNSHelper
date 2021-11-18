@@ -1,5 +1,6 @@
-import com.poly.dnshelper.DNSFlags
-import com.poly.dnshelper.DNSMessage
+import kotlin.com.poly.dnshelper.model.DNSFlags
+import kotlin.com.poly.dnshelper.model.DNSMessage
+import kotlin.com.poly.dnshelper.model.DNSQuery
 import org.junit.Test
 
 class DNSMessageTest {
@@ -16,18 +17,28 @@ class DNSMessageTest {
             rCode = 8
         )
         val dnsMessage = DNSMessage(
-            transactionId = 23123,
+            transactionId = 10,
             dnsFlags = dnsFlags,
-            numOfQuestions = 5432,
-            numOfAnswers = 23432,
-            listOf(),
-            listOf()
+            numOfQuestions = 4,
+            answerRRs = 3,
+            authorityRRs = 2,
+            additionalRRs = 1,
+            listOf(
+                DNSQuery(
+                name = "dns.dns.dns",
+                type = 1,
+                queryClass = 1
+            )
+            ),
+        listOf()
         )
         val finalArray = dnsMessage.getMessageBytes()
 
-        finalArray.forEach {
-            println(forPrint(it))
-        }
+        printItLikeWireShark(finalArray, false)
+
+//        finalArray.forEach {
+//            println(forPrint(it))
+//        }
     }
 
     private fun forPrint(byte: Byte): String {
@@ -41,6 +52,39 @@ class DNSMessageTest {
             }
             newString.append(binaryString).toString()
         } else binaryString
+    }
+
+    private fun printItLikeWireShark(bytes: List<Byte>, isAnswer: Boolean) {
+        if(isAnswer) {
+            throw UnsupportedOperationException()
+        }
+        for(i in 0..bytes.size) {
+            if(i < 2) {
+                println("Trans ID: " + getStringBytes(bytes.get(i)))
+            }
+            if(i >= 2 && i < 4) {
+                println("Flags: " + getStringBytes(bytes.get(i)))
+            }
+            if(i >= 4 && i < 6) {
+                println("Questions number: " + getStringBytes(bytes.get(i)))
+            }
+            if(i >= 6 && i < 8) {
+                println("AnswerRRs: " + getStringBytes(bytes.get(i)))
+            }
+            if(i >= 8 && i < 10) {
+                println("AuthorityRRs: " + getStringBytes(bytes.get(i)))
+            }
+            if(i >= 10 && i < 12) {
+                println("AdditionalRRs: " + getStringBytes(bytes.get(i)))
+            }
+            if(i >= 12) {
+                println("Questions: " + getStringBytes(bytes.get(i)))
+            }
+        }
+    }
+
+    fun getStringBytes(byte: Byte): String {
+        return forPrint(byte)
     }
 //    private val transactionId: Short, // 16 bits
 //    private val dnsFlags: DNSFlags, // 16 bits

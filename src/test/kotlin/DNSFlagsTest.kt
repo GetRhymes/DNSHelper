@@ -1,4 +1,4 @@
-import com.poly.dnshelper.DNSFlags
+import kotlin.com.poly.dnshelper.model.DNSFlags
 import org.junit.Assert
 import org.junit.Test
 
