@@ -1,6 +1,6 @@
-import kotlin.com.poly.dnshelper.model.DNSFlags
-import kotlin.com.poly.dnshelper.model.DNSMessage
-import kotlin.com.poly.dnshelper.model.DNSQuery
+import com.poly.dnshelper.model.DNSFlags
+import com.poly.dnshelper.model.DNSMessage
+import com.poly.dnshelper.model.DNSQuery
 import org.junit.Test
 
 class DNSMessageTest {
@@ -26,64 +26,70 @@ class DNSMessageTest {
             listOf(
                 DNSQuery(
                 name = "dns.dns.dns",
-                type = 1,
-                queryClass = 1
-            )
+                    type = 1,
+                    queryClass = 1
+                )
             ),
-        listOf()
+            listOf()
         )
         val finalArray = dnsMessage.getMessageBytes()
 
-        printItLikeWireShark(finalArray, false)
+//        printItLikeWireShark(finalArray, false)
 
-//        finalArray.forEach {
-//            println(forPrint(it))
-//        }
+        finalArray.forEach {
+            forPrint(it)
+        }
     }
 
     private fun forPrint(byte: Byte): String {
         val binaryString = Integer.toBinaryString(byte.toInt())
         return if (binaryString.length > 16) {
-            binaryString.substring(24)
+            println("Correct form: ${binaryString.substring(24)} Origin form: $binaryString Value: $byte")
+            return binaryString.substring(24)
         } else if (binaryString.length < 8) {
             val newString = StringBuilder()
             for (i in 0 until 8 - binaryString.length) {
                 newString.append(0)
             }
             newString.append(binaryString).toString()
-        } else binaryString
+            println("Correct form: $newString Origin form: $binaryString Value: $byte")
+            return newString.toString()
+        } else {
+            println("Correct form: $binaryString Origin form: $binaryString Value: $byte")
+            binaryString
+        }
     }
 
-    private fun printItLikeWireShark(bytes: List<Byte>, isAnswer: Boolean) {
-        if(isAnswer) {
+    private fun printItLikeWireShark(bytes: ByteArray, isAnswer: Boolean) {
+        if (isAnswer) {
             throw UnsupportedOperationException()
         }
-        for(i in 0..bytes.size) {
-            if(i < 2) {
+        for (i in bytes.indices) {
+            if (i < 2) {
                 println("Trans ID: " + getStringBytes(bytes.get(i)))
             }
-            if(i >= 2 && i < 4) {
+            if (i in 2..3) {
                 println("Flags: " + getStringBytes(bytes.get(i)))
             }
-            if(i >= 4 && i < 6) {
+            if (i in 4..5) {
                 println("Questions number: " + getStringBytes(bytes.get(i)))
             }
-            if(i >= 6 && i < 8) {
+            if (i in 6..7) {
                 println("AnswerRRs: " + getStringBytes(bytes.get(i)))
             }
-            if(i >= 8 && i < 10) {
+            if (i in 8..9) {
                 println("AuthorityRRs: " + getStringBytes(bytes.get(i)))
             }
-            if(i >= 10 && i < 12) {
+            if (i in 10..11) {
                 println("AdditionalRRs: " + getStringBytes(bytes.get(i)))
             }
-            if(i >= 12) {
+            if (i >= 12) {
                 println("Questions: " + getStringBytes(bytes.get(i)))
             }
         }
     }
 
-    fun getStringBytes(byte: Byte): String {
+    private fun getStringBytes(byte: Byte): String {
         return forPrint(byte)
     }
 //    private val transactionId: Short, // 16 bits

@@ -1,4 +1,4 @@
-package kotlin.com.poly.dnshelper.model
+package com.poly.dnshelper.model
 
 import com.poly.dnshelper.Util.getBytesFromInt
 import com.poly.dnshelper.Util.getBytesFromShort
