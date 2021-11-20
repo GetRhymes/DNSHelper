@@ -1,5 +1,7 @@
 package com.poly.dnshelper
 
+import java.lang.IllegalArgumentException
+
 internal object Util {
     fun getBytesFromShort(value: Short): List<Byte> {
         val rightByte: Byte = value.toByte()
@@ -40,5 +42,17 @@ internal object Util {
         var result = leftAndRightBytes.first.toShort()
         result = result.toInt().shl(8).toShort()
         return (result + leftAndRightBytes.second).toShort()
+    }
+
+    fun getIntFromBytes(byteArray: ByteArray): Int {
+        if(byteArray.size != 4) {
+            throw IllegalArgumentException()
+        }
+        var result = 0
+        for (i in 0 until 4) {
+            result = result.shl(8)
+            result += byteArray[i]
+        }
+        return result
     }
 }

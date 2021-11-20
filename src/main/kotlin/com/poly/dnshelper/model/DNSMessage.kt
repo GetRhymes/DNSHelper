@@ -41,7 +41,7 @@ data class DNSMessage(
         return resultArrayBytes.toByteArray()
     }
 
-    fun mapperMessage(byteArray: ByteArray, sizeMessage: Int) {
+    fun mapperMessage(byteArray: ByteArray, sizeMessage: Int, prevMessage: DNSMessage? = null) {
         val nameSize = sizeMessage - 24
         transactionId = getShortFromTwoBytes(byteArray[0] to byteArray[1])
         dnsFlags.mapperFlags(byteArray[2] to byteArray[3])
@@ -49,9 +49,17 @@ data class DNSMessage(
         answerRRs = getShortFromTwoBytes(byteArray[6] to byteArray[7])
         authorityRRs = getShortFromTwoBytes(byteArray[8] to byteArray[9])
         additionalRRs = getShortFromTwoBytes(byteArray[10] to byteArray[11])
+        val sizeQuestions = prevMessage?.getMessageBytes()?.size ?: byteArray.size
         val dnsQuery = DNSQuery()
-        dnsQuery.mapperQuery(byteArray.toList().subList(12, byteArray.size).toByteArray())
+        dnsQuery.mapperQuery(byteArray.toList().subList(12, sizeQuestions).toByteArray())
         questions = listOf(dnsQuery)
+        if(prevMessage != null) {
+            val dnsAnswer = DNSAnswer()
+            dnsAnswer.mapperAnswer(
+                byteArray.toList().subList(prevMessage.getMessageBytes().size - 1, byteArray.size).toByteArray(),
+                prevMessage.questions[0].name)
+            answers = listOf(dnsAnswer)
+        }
     }
 
 //    override fun toString(): String {

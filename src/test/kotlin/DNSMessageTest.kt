@@ -1,3 +1,4 @@
+import com.poly.dnshelper.model.DNSAnswer
 import com.poly.dnshelper.model.DNSFlags
 import com.poly.dnshelper.model.DNSMessage
 import com.poly.dnshelper.model.DNSQuery
@@ -32,13 +33,46 @@ class DNSMessageTest {
             ),
             listOf()
         )
+
+        val dnsMessageWithAnswer = DNSMessage(
+            transactionId = 10,
+            dnsFlags = dnsFlags,
+            numOfQuestions = 4,
+            answerRRs = 3,
+            authorityRRs = 2,
+            additionalRRs = 1,
+            listOf(
+                DNSQuery(
+                    name = "dns.dns.dns",
+                    type = 1,
+                    queryClass = 1
+                )
+            ),
+            listOf(
+                DNSAnswer(
+                    name = "dns.dns.dns",
+                    type = 1,
+                    dnsClass = 1,
+                    timeToLive = 2,
+                    dataLength = 15,
+                    resourceData = "192.192.192.192"
+                )
+            )
+        )
         val finalArray = dnsMessage.getMessageBytes()
-        finalArray.forEach {
+        val finalArrayWithMessage = dnsMessageWithAnswer.getMessageBytes()
+//        finalArray.forEach {
+//            forPrint(it)
+//        }
+        finalArrayWithMessage.forEach {
             forPrint(it)
         }
         val newDns = DNSMessage()
         newDns.mapperMessage(finalArray, 0)
         println(newDns)
+        val newDnsWithAnswer = DNSMessage()
+        newDnsWithAnswer.mapperMessage(finalArrayWithMessage, 0, dnsMessage)
+        println(newDnsWithAnswer)
 
 //        printItLikeWireShark(finalArray, false)
 
