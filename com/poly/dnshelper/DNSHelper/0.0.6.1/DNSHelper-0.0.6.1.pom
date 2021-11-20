@@ -6,7 +6,7 @@
 
     <groupId>com.poly.dnshelper</groupId>
     <artifactId>DNSHelper</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.6.1</version>
 
     <properties>
         <kotlin.version>1.5.31</kotlin.version>
@@ -78,6 +78,14 @@
                         <phase>deploy</phase>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
