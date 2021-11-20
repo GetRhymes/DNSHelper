@@ -1,6 +1,7 @@
 package com.poly.dnshelper.model
 
 import com.poly.dnshelper.Util.getBytesFromShort
+import com.poly.dnshelper.Util.getShortFromTwoBytes
 
 data class DNSMessage(
     var transactionId: Short = 0, // 16 bits
@@ -40,35 +41,29 @@ data class DNSMessage(
         return resultArrayBytes.toByteArray()
     }
 
-    fun mapperMessage(byteArray: ByteArray) {
-        for (i in byteArray.indices) {
-            if (i == 1) {
-                transactionId = getShortFromTwoBytes(byteArray[i - 1] to byteArray[i])
-            }
-            if (i == 3) {
-                dnsFlags.mapperFlags(byteArray[i - 1] to byteArray[i])
-            }
-            if (i == 5) {
-                numOfQuestions = getShortFromTwoBytes(byteArray[i - 1] to byteArray[i])
-            }
-            if (i == 7) {
-                answerRRs = getShortFromTwoBytes(byteArray[i - 1] to byteArray[i])
-            }
-            if (i == 9) {
-                authorityRRs = getShortFromTwoBytes(byteArray[i - 1] to byteArray[i])
-            }
-            if (i == 11) {
-                additionalRRs = getShortFromTwoBytes(byteArray[i - 1] to byteArray[i])
-            }
-            if (i >= 12) {
-                println("Questions: " + getStringBytes(bytes.get(i)))
-            }
-        }
+    fun mapperMessage(byteArray: ByteArray, sizeMessage: Int) {
+        val nameSize = sizeMessage - 24
+        transactionId = getShortFromTwoBytes(byteArray[0] to byteArray[1])
+        dnsFlags.mapperFlags(byteArray[2] to byteArray[3])
+        numOfQuestions = getShortFromTwoBytes(byteArray[4] to byteArray[5])
+        answerRRs = getShortFromTwoBytes(byteArray[6] to byteArray[7])
+        authorityRRs = getShortFromTwoBytes(byteArray[8] to byteArray[9])
+        additionalRRs = getShortFromTwoBytes(byteArray[10] to byteArray[11])
+        val dnsQuery = DNSQuery()
+        dnsQuery.mapperQuery(byteArray.toList().subList(12, byteArray.size).toByteArray())
+        questions = listOf(dnsQuery)
     }
 
-    private fun getShortFromTwoBytes(leftAndRightBytes: Pair<Byte, Byte>): Short {
-        var result = leftAndRightBytes.first.toShort()
-        result = result.toInt().shl(8).toShort()
-        return (result + leftAndRightBytes.second).toShort()
-    }
+//    override fun toString(): String {
+//        return """
+//            transactionId: Short = $transactionId
+//            dnsFlags: DNSFlags = $dnsFlags
+//            numOfQuestions: Short = $numOfQuestions
+//            answerRRs: Short = $answerRRs
+//            authorityRRs: Short = $authorityRRs
+//            additionalRRs: Short = $additionalRRs
+//            questions: List<DNSQuery> = $questions
+//            answers: List<DNSAnswer> = listOf()
+//        """.trimIndent()
+//    }
 }

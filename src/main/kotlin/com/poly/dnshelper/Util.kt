@@ -35,4 +35,10 @@ internal object Util {
             binaryString
         }
     }
+
+    fun getShortFromTwoBytes(leftAndRightBytes: Pair<Byte, Byte>): Short {
+        var result = leftAndRightBytes.first.toShort()
+        result = result.toInt().shl(8).toShort()
+        return (result + leftAndRightBytes.second).toShort()
+    }
 }

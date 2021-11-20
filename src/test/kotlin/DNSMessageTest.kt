@@ -25,7 +25,7 @@ class DNSMessageTest {
             additionalRRs = 1,
             listOf(
                 DNSQuery(
-                name = "dns.dns.dns",
+                    name = "dns.dns.dns",
                     type = 1,
                     queryClass = 1
                 )
@@ -33,12 +33,15 @@ class DNSMessageTest {
             listOf()
         )
         val finalArray = dnsMessage.getMessageBytes()
-
-//        printItLikeWireShark(finalArray, false)
-
         finalArray.forEach {
             forPrint(it)
         }
+        val newDns = DNSMessage()
+        newDns.mapperMessage(finalArray, 0)
+        println(newDns)
+
+//        printItLikeWireShark(finalArray, false)
+
     }
 
     private fun forPrint(byte: Byte): String {

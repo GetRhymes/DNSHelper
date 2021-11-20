@@ -46,7 +46,7 @@ data class DNSFlags(
         if (binaryString[0] == '1') {
             isResponse = true
         }
-        opCode = Integer.parseInt(binaryString.substring(1, 4), 2).toByte()
+        opCode = Integer.parseInt(binaryString.substring(1, 5), 2).toByte()
         if (binaryString[5] == '1') {
             aa = true
         }
@@ -63,7 +63,7 @@ data class DNSFlags(
         if (binaryString[0] == '1') {
             recursionAccepted = true
         }
-        rCode = Integer.parseInt(binaryString.substring(5, 7), 2).toByte()
+        rCode = Integer.parseInt(binaryString.substring(4, 8), 2).toByte()
     }
 
     private fun bitOperation(value: Boolean, shift: Int) {
@@ -79,4 +79,16 @@ data class DNSFlags(
     private fun bitOperation(value: Int) {
         bytes = bytes.or(value)
     }
+
+//    override fun toString(): String {
+//        return """
+//            isResponse: Boolean = $isResponse
+//            opCode: Byte = $opCode
+//            aa: Boolean $aa
+//            truncated: Boolean $truncated
+//            recursionDesired: Boolean = $recursionDesired
+//            recursionAccepted: Boolean = $recursionAccepted
+//            rCode: Byte = $rCode
+//        """.trimIndent()
+//    }
 }
