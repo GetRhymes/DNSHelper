@@ -6,7 +6,7 @@
 
     <groupId>com.poly.dnshelper</groupId>
     <artifactId>DNSHelper</artifactId>
-    <version>0.0.6.1</version>
+    <version>0.0.6test</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

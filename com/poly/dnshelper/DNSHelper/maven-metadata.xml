@@ -3,10 +3,10 @@
   <groupId>com.poly.dnshelper</groupId>
   <artifactId>DNSHelper</artifactId>
   <versioning>
-    <release>0.0.6.1</release>
+    <release>0.0.6test</release>
     <versions>
-      <version>0.0.6.1</version>
+      <version>0.0.6test</version>
     </versions>
-    <lastUpdated>20211120135934</lastUpdated>
+    <lastUpdated>20211120140030</lastUpdated>
   </versioning>
 </metadata>
