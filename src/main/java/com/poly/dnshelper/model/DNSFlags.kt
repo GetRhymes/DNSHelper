@@ -41,30 +41,6 @@ data class DNSFlags(
         setRightByte(leftAndRightByte.second)
     }
 
-    private fun setLeftByte(byte: Byte) {
-        val binaryString = parseToCorrectForm(byte)
-        if (binaryString[0] == '1') {
-            isResponse = true
-        }
-        opCode = Integer.parseInt(binaryString.substring(1, 5), 2).toByte()
-        if (binaryString[5] == '1') {
-            aa = true
-        }
-        if (binaryString[6] == '1') {
-            truncated = true
-        }
-        if (binaryString[7] == '1') {
-            recursionDesired = true
-        }
-    }
-
-    private fun setRightByte(byte: Byte) {
-        val binaryString = parseToCorrectForm(byte)
-        if (binaryString[0] == '1') {
-            recursionAccepted = true
-        }
-        rCode = Integer.parseInt(binaryString.substring(4, 8), 2).toByte()
-    }
 
     private fun bitOperation(value: Boolean, shift: Int) {
         if (value) bytes = bytes.or(1)
@@ -80,15 +56,20 @@ data class DNSFlags(
         bytes = bytes.or(value)
     }
 
-//    override fun toString(): String {
-//        return """
-//            isResponse: Boolean = $isResponse
-//            opCode: Byte = $opCode
-//            aa: Boolean $aa
-//            truncated: Boolean $truncated
-//            recursionDesired: Boolean = $recursionDesired
-//            recursionAccepted: Boolean = $recursionAccepted
-//            rCode: Byte = $rCode
-//        """.trimIndent()
-//    }
+    private fun setLeftByte(byte: Byte) {
+        val binaryString = parseToCorrectForm(byte)
+        isResponse = isPositive(binaryString[0])
+        opCode = Integer.parseInt(binaryString.substring(1, 5), 2).toByte()
+        aa = isPositive(binaryString[5])
+        truncated = isPositive(binaryString[6])
+        recursionDesired = isPositive(binaryString[7])
+    }
+
+    private fun setRightByte(byte: Byte) {
+        val binaryString = parseToCorrectForm(byte)
+        recursionAccepted = isPositive(binaryString[0])
+        rCode = Integer.parseInt(binaryString.substring(4, 8), 2).toByte()
+    }
+
+    private fun isPositive(char: Char) = char == '1'
 }

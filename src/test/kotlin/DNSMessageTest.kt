@@ -33,7 +33,6 @@ class DNSMessageTest {
             ),
             listOf()
         )
-
         val dnsMessageWithAnswer = DNSMessage(
             transactionId = 10,
             dnsFlags = dnsFlags,
@@ -103,25 +102,25 @@ class DNSMessageTest {
         }
         for (i in bytes.indices) {
             if (i < 2) {
-                println("Trans ID: " + getStringBytes(bytes.get(i)))
+                println("Trans ID: " + getStringBytes(bytes[i]))
             }
             if (i in 2..3) {
-                println("Flags: " + getStringBytes(bytes.get(i)))
+                println("Flags: " + getStringBytes(bytes[i]))
             }
             if (i in 4..5) {
-                println("Questions number: " + getStringBytes(bytes.get(i)))
+                println("Questions number: " + getStringBytes(bytes[i]))
             }
             if (i in 6..7) {
-                println("AnswerRRs: " + getStringBytes(bytes.get(i)))
+                println("AnswerRRs: " + getStringBytes(bytes[i]))
             }
             if (i in 8..9) {
-                println("AuthorityRRs: " + getStringBytes(bytes.get(i)))
+                println("AuthorityRRs: " + getStringBytes(bytes[i]))
             }
             if (i in 10..11) {
-                println("AdditionalRRs: " + getStringBytes(bytes.get(i)))
+                println("AdditionalRRs: " + getStringBytes(bytes[i]))
             }
             if (i >= 12) {
-                println("Questions: " + getStringBytes(bytes.get(i)))
+                println("Questions: " + getStringBytes(bytes[i]))
             }
         }
     }
@@ -129,12 +128,4 @@ class DNSMessageTest {
     private fun getStringBytes(byte: Byte): String {
         return forPrint(byte)
     }
-//    private val transactionId: Short, // 16 bits
-//    private val dnsFlags: DNSFlags, // 16 bits
-//    private val numOfQuestions: Short, // 16 bits
-//    private val numOfAnswers: Short, // 16 bits
-//    private val answers: List<DNSAnswer>,
-//    private val questions: List<DNSQuery>,
-//    private val numOfAuthority: Short = 0,
-//    private val numOfAdditional: Short = 0,
 }

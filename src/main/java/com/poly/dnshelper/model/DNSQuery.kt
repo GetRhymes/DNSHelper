@@ -27,12 +27,4 @@ data class DNSQuery(
         queryClass = getShortFromTwoBytes(byteArray[byteArray.size - 2] to byteArray[byteArray.size - 1])
         name = String(byteArray.toList().subList(0, byteArray.size - 4).toByteArray())
     }
-
-//    override fun toString(): String {
-//        return  """
-//            name: String = $name
-//            type: Short = $type
-//            queryClass: Short = $queryClass
-//        """.trimIndent()
-//    }
 }

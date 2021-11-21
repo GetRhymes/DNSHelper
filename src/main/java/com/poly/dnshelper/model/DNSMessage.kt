@@ -4,14 +4,14 @@ import com.poly.dnshelper.Util.getBytesFromShort
 import com.poly.dnshelper.Util.getShortFromTwoBytes
 
 data class DNSMessage(
-    var transactionId: Short = 0, // 16 bits
+    var transactionId: Short, // 16 bits
     var dnsFlags: DNSFlags, // 16 bits
-    var numOfQuestions: Short = 0, // 16 bits
-    var answerRRs: Short = 0, // 16 bits
-    var authorityRRs: Short = 0, // 16 bits
-    var additionalRRs: Short = 0, // 16 bits
-    var questions: List<DNSQuery> = listOf(),
-    var answers: List<DNSAnswer> = listOf(),
+    var numOfQuestions: Short, // 16 bits
+    var answerRRs: Short, // 16 bits
+    var authorityRRs: Short, // 16 bits
+    var additionalRRs: Short, // 16 bits
+    var questions: List<DNSQuery>,
+    var answers: List<DNSAnswer>,
 ) {
     constructor() : this(
         transactionId = 0,
@@ -42,7 +42,7 @@ data class DNSMessage(
     }
 
     fun mapperMessage(byteArray: ByteArray, sizeMessage: Int, prevMessage: DNSMessage? = null) {
-        val nameSize = sizeMessage - 24
+//        val nameSize = sizeMessage - 24
         transactionId = getShortFromTwoBytes(byteArray[0] to byteArray[1])
         dnsFlags.mapperFlags(byteArray[2] to byteArray[3])
         numOfQuestions = getShortFromTwoBytes(byteArray[4] to byteArray[5])
@@ -57,21 +57,9 @@ data class DNSMessage(
             val dnsAnswer = DNSAnswer()
             dnsAnswer.mapperAnswer(
                 byteArray.toList().subList(prevMessage.getMessageBytes().size - 1, byteArray.size).toByteArray(),
-                prevMessage.questions[0].name)
+                prevMessage.questions[0].name
+            )
             answers = listOf(dnsAnswer)
         }
     }
-
-//    override fun toString(): String {
-//        return """
-//            transactionId: Short = $transactionId
-//            dnsFlags: DNSFlags = $dnsFlags
-//            numOfQuestions: Short = $numOfQuestions
-//            answerRRs: Short = $answerRRs
-//            authorityRRs: Short = $authorityRRs
-//            additionalRRs: Short = $additionalRRs
-//            questions: List<DNSQuery> = $questions
-//            answers: List<DNSAnswer> = listOf()
-//        """.trimIndent()
-//    }
 }
