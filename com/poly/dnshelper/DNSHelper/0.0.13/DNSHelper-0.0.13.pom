@@ -6,7 +6,7 @@
 
     <groupId>com.poly.dnshelper</groupId>
     <artifactId>DNSHelper</artifactId>
-    <version>0.0.12</version>
+    <version>0.0.13</version>
 
     <properties>
         <kotlin.version>1.5.31</kotlin.version>
