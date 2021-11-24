@@ -6,12 +6,12 @@ import com.poly.dnshelper.Util.getIntFromBytes
 import com.poly.dnshelper.Util.getShortFromTwoBytes
 
 data class DNSAnswer(
-    var name: String = "",
-    var type: Short = 0,
-    var dnsClass: Short = 0,
-    var timeToLive: Int = 0,
-    var dataLength: Short = 0,
-    var resourceData: String = ""
+    var name: String,
+    var type: Short,
+    var dnsClass: Short,
+    var timeToLive: Int,
+    var dataLength: Short,
+    var resourceData: String
 ) {
     constructor() : this(
         name = "",

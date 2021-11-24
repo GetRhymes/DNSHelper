@@ -32,7 +32,6 @@ data class DNSFlags(
         bitOperation(recursionAccepted, 4)
         bitOperation(0, 3)
         bitOperation(rCode.toInt())
-        println(Integer.toBinaryString(bytes))
         return bytes.toShort()
     }
 

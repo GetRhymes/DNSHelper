@@ -1,3 +1,4 @@
+import com.poly.dnshelper.Util.parseToCorrectForm
 import com.poly.dnshelper.model.DNSAnswer
 import com.poly.dnshelper.model.DNSFlags
 import com.poly.dnshelper.model.DNSMessage
@@ -7,7 +8,7 @@ import org.junit.Test
 class DNSMessageTest {
 
     @Test
-    fun getFinalArrayTest() {
+    fun dnsMessageTest() {
         val dnsFlags = DNSFlags(
             isResponse = true,
             opCode = 1,
@@ -64,7 +65,7 @@ class DNSMessageTest {
 //            forPrint(it)
 //        }
         finalArrayWithMessage.forEach {
-            forPrint(it)
+            parseToCorrectForm(it)
         }
         val newDns = DNSMessage()
         newDns.mapperMessage(finalArray, 0)
@@ -75,25 +76,6 @@ class DNSMessageTest {
 
 //        printItLikeWireShark(finalArray, false)
 
-    }
-
-    private fun forPrint(byte: Byte): String {
-        val binaryString = Integer.toBinaryString(byte.toInt())
-        return if (binaryString.length > 16) {
-            println("Correct form: ${binaryString.substring(24)} Origin form: $binaryString Value: $byte")
-            return binaryString.substring(24)
-        } else if (binaryString.length < 8) {
-            val newString = StringBuilder()
-            for (i in 0 until 8 - binaryString.length) {
-                newString.append(0)
-            }
-            newString.append(binaryString).toString()
-            println("Correct form: $newString Origin form: $binaryString Value: $byte")
-            return newString.toString()
-        } else {
-            println("Correct form: $binaryString Origin form: $binaryString Value: $byte")
-            binaryString
-        }
     }
 
     private fun printItLikeWireShark(bytes: ByteArray, isAnswer: Boolean) {
@@ -126,6 +108,6 @@ class DNSMessageTest {
     }
 
     private fun getStringBytes(byte: Byte): String {
-        return forPrint(byte)
+        return parseToCorrectForm(byte)
     }
 }
