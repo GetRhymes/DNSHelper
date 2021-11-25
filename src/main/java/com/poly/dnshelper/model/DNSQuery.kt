@@ -4,19 +4,14 @@ import com.poly.dnshelper.Util.getBytesFromShort
 import com.poly.dnshelper.Util.getShortFromTwoBytes
 
 data class DNSQuery(
-    var name: String,
-    var type: Short,
-    var queryClass: Short
+    var name: String = "",
+    var type: Short = 0,
+    var queryClass: Short = 0
 ) {
-    constructor() : this(
-        name = "",
-        type = 0,
-        queryClass = 0
-    )
 
     fun getQueryBytes(): List<Byte> {
         val resultArrayBytes = mutableListOf<Byte>()
-        resultArrayBytes.addAll(name.toByteArray().toList())
+        resultArrayBytes.addAll(bytesFromName(name))
         resultArrayBytes.addAll(getBytesFromShort(type))
         resultArrayBytes.addAll(getBytesFromShort(queryClass))
         return resultArrayBytes
@@ -26,5 +21,16 @@ data class DNSQuery(
         type = getShortFromTwoBytes(byteArray[byteArray.size - 4] to byteArray[byteArray.size - 3])
         queryClass = getShortFromTwoBytes(byteArray[byteArray.size - 2] to byteArray[byteArray.size - 1])
         name = String(byteArray.toList().subList(0, byteArray.size - 4).toByteArray())
+    }
+
+    private fun bytesFromName(name: String): List<Byte> {
+        val parts = name.split(".")
+        val bytes = mutableListOf<Byte>()
+        parts.forEach {
+            bytes.add(it.length.toByte())
+            bytes.addAll(it.toByteArray().toList())
+        }
+        bytes.add(0)
+        return bytes
     }
 }

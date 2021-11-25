@@ -3,23 +3,14 @@ package com.poly.dnshelper.model
 import com.poly.dnshelper.Util.parseToCorrectForm
 
 data class DNSFlags(
-    var isResponse: Boolean,
-    var opCode: Byte,
-    var aa: Boolean,
-    var truncated: Boolean,
-    var recursionDesired: Boolean,
-    var recursionAccepted: Boolean,
-    var rCode: Byte
+    var isResponse: Boolean = false,
+    var opCode: Byte = 0,
+    var aa: Boolean = false,
+    var truncated: Boolean = false,
+    var recursionDesired: Boolean = false,
+    var recursionAccepted: Boolean = false,
+    var rCode: Byte = 0
 ) {
-    constructor() : this(
-        isResponse = false,
-        opCode = 0,
-        aa = false,
-        truncated = false,
-        recursionDesired = false,
-        recursionAccepted = false,
-        rCode = 0
-    )
 
     private var bytes: Int = 0
 

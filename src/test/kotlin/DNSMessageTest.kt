@@ -1,8 +1,8 @@
 import com.poly.dnshelper.Util.parseToCorrectForm
-import com.poly.dnshelper.model.DNSAnswer
 import com.poly.dnshelper.model.DNSFlags
 import com.poly.dnshelper.model.DNSMessage
 import com.poly.dnshelper.model.DNSQuery
+import com.poly.dnshelper.model.answer.DNSAnswer
 import org.junit.Test
 
 class DNSMessageTest {
@@ -55,7 +55,7 @@ class DNSMessageTest {
                     dnsClass = 1,
                     timeToLive = 2,
                     dataLength = 15,
-                    resourceData = "192.192.192.192"
+                    resourceData = byteArrayOf()
                 )
             )
         )
@@ -68,10 +68,10 @@ class DNSMessageTest {
             parseToCorrectForm(it)
         }
         val newDns = DNSMessage()
-        newDns.mapperMessage(finalArray, 0)
+        newDns.mapperMessage(finalArray)
         println(newDns)
         val newDnsWithAnswer = DNSMessage()
-        newDnsWithAnswer.mapperMessage(finalArrayWithMessage, 0, dnsMessage)
+        newDnsWithAnswer.mapperMessage(finalArrayWithMessage, dnsMessage)
         println(newDnsWithAnswer)
 
 //        printItLikeWireShark(finalArray, false)
@@ -105,6 +105,44 @@ class DNSMessageTest {
                 println("Questions: " + getStringBytes(bytes[i]))
             }
         }
+    }
+
+
+    @Test
+    fun testAnswer() {
+        val byteArray = ubyteArrayOf(
+            0x00u, 0x6fu, 0x81u, 0x80u,
+            0x00u, 0x01u, 0x00u, 0x01u,
+            0x00u, 0x00u, 0x00u, 0x00u,
+            0x02u, 0x79u, 0x61u, 0x02u,
+            0x72u, 0x75u, 0x00u, 0x00u,
+            0x01u, 0x00u, 0x01u, 0xc0u,
+            0x0cu, 0x00u, 0x01u, 0x00u,
+            0x01u, 0x00u, 0x00u, 0x02u,
+            0x06u, 0x00u, 0x04u, 0x57u,
+            0xfau, 0xfau, 0xf2u
+        )
+        val prevMessage = DNSMessage(
+            transactionId = 111,
+            dnsFlags = DNSFlags(
+                false,
+                0,
+                aa = false,
+                truncated = false,
+                recursionDesired = true,
+                recursionAccepted = false,
+                rCode = 0
+            ),
+            numOfQuestions = 1,
+            answerRRs = 0,
+            authorityRRs = 0,
+            additionalRRs = 0,
+            questions = listOf(DNSQuery("ya.ru", 1, 1)),
+            answers = listOf()
+        )
+        val message = DNSMessage()
+        message.mapperMessage(byteArray.toByteArray(), prevMessage)
+        println(message)
     }
 
     private fun getStringBytes(byte: Byte): String {

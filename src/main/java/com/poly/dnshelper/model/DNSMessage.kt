@@ -2,27 +2,18 @@ package com.poly.dnshelper.model
 
 import com.poly.dnshelper.Util.getBytesFromShort
 import com.poly.dnshelper.Util.getShortFromTwoBytes
+import com.poly.dnshelper.model.answer.*
 
 data class DNSMessage(
-    var transactionId: Short, // 16 bits
-    var dnsFlags: DNSFlags, // 16 bits
-    var numOfQuestions: Short, // 16 bits
-    var answerRRs: Short, // 16 bits
-    var authorityRRs: Short, // 16 bits
-    var additionalRRs: Short, // 16 bits
-    var questions: List<DNSQuery>,
-    var answers: List<DNSAnswer>,
+    var transactionId: Short = 0, // 16 bits
+    var dnsFlags: DNSFlags = DNSFlags(), // 16 bits
+    var numOfQuestions: Short = 0, // 16 bits
+    var answerRRs: Short = 0, // 16 bits
+    var authorityRRs: Short = 0, // 16 bits
+    var additionalRRs: Short = 0, // 16 bits
+    var questions: List<DNSQuery> = listOf(),
+    var answers: List<DNSAnswer> = listOf(),
 ) {
-    constructor() : this(
-        transactionId = 0,
-        dnsFlags = DNSFlags(),
-        numOfQuestions = 0,
-        answerRRs = 0,
-        authorityRRs = 0,
-        additionalRRs = 0,
-        questions = listOf(),
-        answers = listOf()
-    )
 
     fun getMessageBytes(): ByteArray {
         val resultArrayBytes = mutableListOf<Byte>()
@@ -41,8 +32,7 @@ data class DNSMessage(
         return resultArrayBytes.toByteArray()
     }
 
-    fun mapperMessage(byteArray: ByteArray, sizeMessage: Int, prevMessage: DNSMessage? = null) {
-//        val nameSize = sizeMessage - 24
+    fun mapperMessage(byteArray: ByteArray, prevMessage: DNSMessage? = null) {
         transactionId = getShortFromTwoBytes(byteArray[0] to byteArray[1])
         dnsFlags.mapperFlags(byteArray[2] to byteArray[3])
         numOfQuestions = getShortFromTwoBytes(byteArray[4] to byteArray[5])
@@ -53,11 +43,18 @@ data class DNSMessage(
         val dnsQuery = DNSQuery()
         dnsQuery.mapperQuery(byteArray.toList().subList(12, sizeQuestions).toByteArray())
         questions = listOf(dnsQuery)
-        if(prevMessage != null) {
-            val dnsAnswer = DNSAnswer()
+        if (prevMessage != null) {
+            val dnsAnswer = when (prevMessage.questions[0].type) {
+                (1).toShort() -> DNSAnswerA()
+                (15).toShort() -> DNSAnswerMX()
+                (16).toShort() -> DNSAnswerTXT()
+                (28).toShort() -> DNSAnswerAAAA()
+                else -> {
+                    throw IllegalArgumentException()
+                }
+            }
             dnsAnswer.mapperAnswer(
-                byteArray.toList().subList(prevMessage.getMessageBytes().size - 1, byteArray.size).toByteArray(),
-                prevMessage.questions[0].name
+                byteArray.toList().subList(prevMessage.getMessageBytes().size, byteArray.size).toByteArray()
             )
             answers = listOf(dnsAnswer)
         }
