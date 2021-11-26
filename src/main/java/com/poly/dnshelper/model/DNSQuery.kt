@@ -20,7 +20,7 @@ data class DNSQuery(
     fun mapperQuery(byteArray: ByteArray) {
         type = getShortFromTwoBytes(byteArray[byteArray.size - 4] to byteArray[byteArray.size - 3])
         queryClass = getShortFromTwoBytes(byteArray[byteArray.size - 2] to byteArray[byteArray.size - 1])
-        name = String(byteArray.toList().subList(0, byteArray.size - 4).toByteArray())
+        name = nameFromBytes(byteArray.toList().subList(0, byteArray.size - 4).toByteArray())
     }
 
     private fun bytesFromName(name: String): List<Byte> {
@@ -32,5 +32,25 @@ data class DNSQuery(
         }
         bytes.add(0)
         return bytes
+    }
+
+    private fun nameFromBytes(byteArray: ByteArray): String {
+        val name = StringBuilder()
+        var currentPos = 0
+        var dot: Byte
+        while (byteArray[currentPos] != (0).toByte() && byteArray.size - 1 != currentPos) {
+            dot = byteArray[currentPos]
+            if (byteArray.size - 1 != currentPos) {
+                val currentWord = mutableListOf<Byte>()
+                for (i in currentPos + 1..currentPos + dot) {
+                    currentWord.add(byteArray[i])
+                }
+                name.append(String(currentWord.toByteArray()))
+                name.append(".")
+                currentPos += dot + 1
+            }
+        }
+        val nameStr = name.toString()
+        return nameStr.substring(0, nameStr.length - 1)
     }
 }

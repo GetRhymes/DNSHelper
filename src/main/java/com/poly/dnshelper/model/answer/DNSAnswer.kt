@@ -6,7 +6,7 @@ import com.poly.dnshelper.Util.getIntFromBytes
 import com.poly.dnshelper.Util.getShortFromTwoBytes
 
 abstract class DNSAnswer(
-    var name: String = "",
+    var name: ByteArray = byteArrayOf(0xC0.toByte(), 0x0Cu.toByte()),
     var type: Short = 0,
     var dnsClass: Short = 0,
     var timeToLive: Int = 0,
@@ -16,7 +16,7 @@ abstract class DNSAnswer(
 
     open fun getAnswerBytes(): List<Byte> {
         val resultArrayBytes = mutableListOf<Byte>()
-        resultArrayBytes.addAll(name.toByteArray().toList())
+        resultArrayBytes.addAll(name.toList())
         resultArrayBytes.addAll(getBytesFromShort(type))
         resultArrayBytes.addAll(getBytesFromShort(dnsClass))
         resultArrayBytes.addAll(getBytesFromInt(timeToLive))
@@ -45,7 +45,6 @@ abstract class DNSAnswer(
 
         other as DNSAnswer
 
-        if (name != other.name) return false
         if (type != other.type) return false
         if (dnsClass != other.dnsClass) return false
         if (timeToLive != other.timeToLive) return false

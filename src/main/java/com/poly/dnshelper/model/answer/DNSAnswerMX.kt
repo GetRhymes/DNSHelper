@@ -5,7 +5,7 @@ import com.poly.dnshelper.Util.getShortFromTwoBytes
 
 class DNSAnswerMX(
     var preference: Short = 0,
-    name: String = "",
+    name: ByteArray = byteArrayOf(0xC0.toByte(), 0x0Cu.toByte()),
     type: Short = 0,
     dnsClass: Short = 0,
     timeToLive: Int = 0,

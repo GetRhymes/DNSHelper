@@ -319,4 +319,20 @@ class DNSMessageTest {
         println(message)
     }
 
+    @Test
+    fun testSimpleQuery() {
+        val byteArray = ubyteArrayOf(
+            0x00u, 0x6fu, 0x01u, 0x00u, 0x00u, 0x01u, 0x00u, 0x00u, 0x00u, 0x00u,
+            0x00u, 0x00u, 0x01u, 0x61u, 0x00u, 0x00u, 0x01u, 0x00u, 0x01u
+        )
+
+        val message = DNSMessage()
+        message.mapperMessage(byteArray.toByteArray(), null)
+        println(message)
+
+        for (i in byteArray) {
+            print("$i ")
+        }
+    }
+
 }

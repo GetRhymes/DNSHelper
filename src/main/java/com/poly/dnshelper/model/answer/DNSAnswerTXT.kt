@@ -2,7 +2,7 @@ package com.poly.dnshelper.model.answer
 
 class DNSAnswerTXT(
     var txtLength: Byte = 0,
-    name: String = "",
+    name: ByteArray = byteArrayOf(0xC0.toByte(), 0x0Cu.toByte()),
     type: Short = 0,
     dnsClass: Short = 0,
     timeToLive: Int = 0,
