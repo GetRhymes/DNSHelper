@@ -1,5 +1,7 @@
 package com.poly.dnshelper.model.answer
 
+import com.poly.dnshelper.Util.getShortFromTwoBytes
+
 class DNSAnswerA(
     name: String = "",
     type: Short = 0,
@@ -23,5 +25,14 @@ class DNSAnswerA(
             .toList()
             .subList(sizeName + 10, sizeName + 10 + dataLength)
             .toByteArray()
+    }
+
+    /**
+    shift= name(2) + type(2) + class(2) + ttl(4)
+    size = shift + dataLength(2) + valueOf(datalength)
+     */
+    override fun getSize(byteArray: ByteArray): Int {
+        val shift = 2 + 2 + 2 + 4
+        return shift + 2 + getShortFromTwoBytes(byteArray[shift] to byteArray[shift + 1])
     }
 }

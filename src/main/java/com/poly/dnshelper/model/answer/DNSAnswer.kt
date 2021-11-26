@@ -5,7 +5,7 @@ import com.poly.dnshelper.Util.getBytesFromShort
 import com.poly.dnshelper.Util.getIntFromBytes
 import com.poly.dnshelper.Util.getShortFromTwoBytes
 
-open class DNSAnswer(
+abstract class DNSAnswer(
     var name: String = "",
     var type: Short = 0,
     var dnsClass: Short = 0,
@@ -36,6 +36,8 @@ open class DNSAnswer(
         )
         dataLength = getShortFromTwoBytes(byteArray[sizeName + 8] to byteArray[sizeName + 9])
     }
+
+    abstract fun getSize(byteArray: ByteArray): Int
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

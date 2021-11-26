@@ -43,20 +43,43 @@ data class DNSMessage(
         val dnsQuery = DNSQuery()
         dnsQuery.mapperQuery(byteArray.toList().subList(12, sizeQuestions).toByteArray())
         questions = listOf(dnsQuery)
+        answers = getAnswers(answerRRs, byteArray, prevMessage)
+    }
+
+    private fun getAnswers(answerRRs: Short, byteArray: ByteArray, prevMessage: DNSMessage?): List<DNSAnswer> {
+        val answers = mutableListOf<DNSAnswer>()
         if (prevMessage != null) {
-            val dnsAnswer = when (prevMessage.questions[0].type) {
-                (1).toShort() -> DNSAnswerA()
-                (15).toShort() -> DNSAnswerMX()
-                (16).toShort() -> DNSAnswerTXT()
-                (28).toShort() -> DNSAnswerAAAA()
-                else -> {
-                    throw IllegalArgumentException()
+            var answerSize = 0
+            var currentPosition = prevMessage.getMessageBytes().size
+            for (i in 0 until answerRRs) {
+                currentPosition += answerSize
+                val dnsAnswer = when (prevMessage.questions[0].type) {
+                    (1).toShort() -> DNSAnswerA()
+                    (15).toShort() -> DNSAnswerMX()
+                    (16).toShort() -> DNSAnswerTXT()
+                    (28).toShort() -> DNSAnswerAAAA()
+                    else -> {
+                        throw IllegalArgumentException()
+                    }
                 }
+                answerSize =
+                    dnsAnswer.getSize(byteArray.toList().subList(currentPosition, byteArray.size).toByteArray())
+                dnsAnswer.mapperAnswer(
+                    byteArray
+                        .toList()
+                        .subList(currentPosition, currentPosition + answerSize)
+                        .toByteArray()
+                )
+                // answerSize -= 1
+                answers.add(dnsAnswer)
             }
-            dnsAnswer.mapperAnswer(
-                byteArray.toList().subList(prevMessage.getMessageBytes().size, byteArray.size).toByteArray()
-            )
-            answers = listOf(dnsAnswer)
         }
+//        for (ans in answers) {
+//            for (b in ans.getAnswerBytes()) {
+//                print("$b ")
+//            }
+//            println()
+//        }
+        return answers
     }
 }

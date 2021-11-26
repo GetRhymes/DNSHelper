@@ -23,7 +23,12 @@ class DNSAnswerTXT(
         txtLength = byteArray[sizeName + 10]
         resourceData = byteArray
             .toList()
-            .subList(sizeName + 11, sizeName + 11 + dataLength)
+            .subList(sizeName + 11, sizeName + 11 + txtLength)
             .toByteArray()
+    }
+
+    override fun getSize(byteArray: ByteArray): Int {
+        val shift = 2 + 2 + 2 + 4 + 2
+        return shift + 1 + byteArray[shift].toUByte().toInt()
     }
 }

@@ -26,7 +26,12 @@ class DNSAnswerMX(
         preference = getShortFromTwoBytes(byteArray[sizeName + 10] to byteArray[sizeName + 11])
         resourceData = byteArray
             .toList()
-            .subList(sizeName + 12, sizeName + 12 + dataLength)
+            .subList(sizeName + 12, sizeName + 12 + dataLength - 2)
             .toByteArray()
+    }
+
+    override fun getSize(byteArray: ByteArray): Int {
+        val shift = 2 + 2 + 2 + 4
+        return shift + 2 + getShortFromTwoBytes(byteArray[shift] to byteArray[shift + 1])
     }
 }
